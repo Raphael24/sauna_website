@@ -1,0 +1,237 @@
+/* ==========================================================================
+   Design-Tokens: Farben, Typografie, Abstände, Schatten.
+   Dunkel ist der Grundton (Anthrazit / warmes Holzbraun mit Glut-Akzenten),
+   hell ist eine warme, papierartige Variante. Die Diagramme lesen dieselben
+   Variablen aus, damit sie sich dem Modus anpassen.
+   ========================================================================== */
+
+:root {
+    /* Typografie */
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-md: 1rem;
+    --fs-lg: 1.125rem;
+    --fs-xl: 1.375rem;
+    --fs-2xl: 1.75rem;
+    --fs-3xl: 2.25rem;
+    --fs-hero: clamp(4rem, 2.4rem + 7vw, 7.5rem);
+
+    /* Abstände */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Radien */
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-pill: 999px;
+
+    /* Bewegung */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-fast: 140ms;
+    --dur-med: 260ms;
+    --dur-slow: 480ms;
+
+    --content-width: 1200px;
+}
+
+/* --------------------------------------------------------------------------
+   Dunkler Modus (Standard)
+   -------------------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #141110;
+    --bg-glow: rgba(255, 110, 40, 0.07);
+    --surface: #1d1815;
+    --surface-2: #26201b;
+    --surface-3: #312821;
+    --surface-raised: #221c18;
+    --border: rgba(255, 228, 200, 0.08);
+    --border-strong: rgba(255, 228, 200, 0.16);
+
+    --text: #f4ece4;
+    --text-muted: #b9a999;
+    --text-subtle: #8f7f71;
+    --text-on-accent: #1b0f08;
+
+    --accent: #ff7a2f;
+    --accent-strong: #ff8f4d;
+    --accent-soft: rgba(255, 122, 47, 0.14);
+    --accent-text: #ffa266;
+    --ember: #e2412b;
+    --ember-soft: rgba(226, 65, 43, 0.16);
+
+    --success: #7dd3a0;
+    --success-soft: rgba(125, 211, 160, 0.14);
+    --warning: #f3c35b;
+    --warning-soft: rgba(243, 195, 91, 0.14);
+    --danger: #ff8a78;
+    --danger-soft: rgba(255, 110, 90, 0.14);
+    --neutral-soft: rgba(255, 228, 200, 0.08);
+
+    --focus: #ffb27a;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.32), 0 1px 3px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.45), 0 3px 10px rgba(0, 0, 0, 0.3);
+
+    --skeleton-base: rgba(255, 228, 200, 0.05);
+    --skeleton-shine: rgba(255, 228, 200, 0.11);
+
+    /* Temperaturskala: kühl → aufheizend → heiss → Glut */
+    --temp-cold: #6f8fb4;
+    --temp-cool: #8e9aa6;
+    --temp-warm: #e3a64e;
+    --temp-hot: #f47b2c;
+    --temp-hotter: #e5432c;
+    --temp-max: #c41f2e;
+
+    /* Diagramme */
+    --chart-grid: rgba(255, 228, 200, 0.07);
+    --chart-axis: rgba(255, 228, 200, 0.2);
+    --chart-label: #a8988a;
+    --chart-zone-1: rgba(244, 123, 44, 0.07);
+    --chart-zone-2: rgba(229, 67, 44, 0.09);
+    --chart-session: rgba(255, 196, 120, 0.06);
+    --chart-session-border: rgba(255, 196, 120, 0.22);
+    --chart-tooltip-bg: rgba(33, 27, 23, 0.96);
+    --chart-empty-cell: rgba(255, 228, 200, 0.045);
+}
+
+/* --------------------------------------------------------------------------
+   Heller Modus
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #f6f0e9;
+    --bg-glow: rgba(255, 140, 60, 0.1);
+    --surface: #fffdfb;
+    --surface-2: #f3ebe2;
+    --surface-3: #e9ddd0;
+    --surface-raised: #ffffff;
+    --border: rgba(74, 44, 20, 0.1);
+    --border-strong: rgba(74, 44, 20, 0.2);
+
+    --text: #2a1d15;
+    --text-muted: #6a5546;
+    --text-subtle: #8c7666;
+    --text-on-accent: #ffffff;
+
+    --accent: #d9581c;
+    --accent-strong: #c24a12;
+    --accent-soft: rgba(217, 88, 28, 0.11);
+    --accent-text: #b24310;
+    --ember: #c2321f;
+    --ember-soft: rgba(194, 50, 31, 0.1);
+
+    --success: #217a4a;
+    --success-soft: rgba(33, 122, 74, 0.1);
+    --warning: #9a6a00;
+    --warning-soft: rgba(196, 140, 20, 0.14);
+    --danger: #b3261e;
+    --danger-soft: rgba(179, 38, 30, 0.09);
+    --neutral-soft: rgba(74, 44, 20, 0.07);
+
+    --focus: #c24a12;
+
+    --shadow-sm: 0 1px 2px rgba(74, 44, 20, 0.08);
+    --shadow-md: 0 6px 18px rgba(74, 44, 20, 0.08), 0 1px 3px rgba(74, 44, 20, 0.06);
+    --shadow-lg: 0 18px 48px rgba(74, 44, 20, 0.12), 0 3px 10px rgba(74, 44, 20, 0.06);
+
+    --skeleton-base: rgba(74, 44, 20, 0.06);
+    --skeleton-shine: rgba(74, 44, 20, 0.11);
+
+    --temp-cold: #4f74a3;
+    --temp-cool: #7d8995;
+    --temp-warm: #d6952f;
+    --temp-hot: #e66a1c;
+    --temp-hotter: #cf3420;
+    --temp-max: #9e1424;
+
+    --chart-grid: rgba(74, 44, 20, 0.08);
+    --chart-axis: rgba(74, 44, 20, 0.22);
+    --chart-label: #7a6455;
+    --chart-zone-1: rgba(230, 106, 28, 0.07);
+    --chart-zone-2: rgba(207, 52, 32, 0.07);
+    --chart-session: rgba(214, 149, 47, 0.08);
+    --chart-session-border: rgba(214, 149, 47, 0.35);
+    --chart-tooltip-bg: rgba(255, 253, 251, 0.98);
+    --chart-empty-cell: rgba(74, 44, 20, 0.06);
+}
+
+/* Systemeinstellung «hell», solange keine eigene Wahl gespeichert ist. */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        color-scheme: light;
+
+        --bg: #f6f0e9;
+        --bg-glow: rgba(255, 140, 60, 0.1);
+        --surface: #fffdfb;
+        --surface-2: #f3ebe2;
+        --surface-3: #e9ddd0;
+        --surface-raised: #ffffff;
+        --border: rgba(74, 44, 20, 0.1);
+        --border-strong: rgba(74, 44, 20, 0.2);
+
+        --text: #2a1d15;
+        --text-muted: #6a5546;
+        --text-subtle: #8c7666;
+        --text-on-accent: #ffffff;
+
+        --accent: #d9581c;
+        --accent-strong: #c24a12;
+        --accent-soft: rgba(217, 88, 28, 0.11);
+        --accent-text: #b24310;
+        --ember: #c2321f;
+        --ember-soft: rgba(194, 50, 31, 0.1);
+
+        --success: #217a4a;
+        --success-soft: rgba(33, 122, 74, 0.1);
+        --warning: #9a6a00;
+        --warning-soft: rgba(196, 140, 20, 0.14);
+        --danger: #b3261e;
+        --danger-soft: rgba(179, 38, 30, 0.09);
+        --neutral-soft: rgba(74, 44, 20, 0.07);
+
+        --focus: #c24a12;
+
+        --shadow-sm: 0 1px 2px rgba(74, 44, 20, 0.08);
+        --shadow-md: 0 6px 18px rgba(74, 44, 20, 0.08), 0 1px 3px rgba(74, 44, 20, 0.06);
+        --shadow-lg: 0 18px 48px rgba(74, 44, 20, 0.12), 0 3px 10px rgba(74, 44, 20, 0.06);
+
+        --skeleton-base: rgba(74, 44, 20, 0.06);
+        --skeleton-shine: rgba(74, 44, 20, 0.11);
+
+        --temp-cold: #4f74a3;
+        --temp-cool: #7d8995;
+        --temp-warm: #d6952f;
+        --temp-hot: #e66a1c;
+        --temp-hotter: #cf3420;
+        --temp-max: #9e1424;
+
+        --chart-grid: rgba(74, 44, 20, 0.08);
+        --chart-axis: rgba(74, 44, 20, 0.22);
+        --chart-label: #7a6455;
+        --chart-zone-1: rgba(230, 106, 28, 0.07);
+        --chart-zone-2: rgba(207, 52, 32, 0.07);
+        --chart-session: rgba(214, 149, 47, 0.08);
+        --chart-session-border: rgba(214, 149, 47, 0.35);
+        --chart-tooltip-bg: rgba(255, 253, 251, 0.98);
+        --chart-empty-cell: rgba(74, 44, 20, 0.06);
+    }
+}
