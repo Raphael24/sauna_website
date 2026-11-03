@@ -1,0 +1,2 @@
+# Interne PHP-Dateien: kein Direktzugriff aus dem Web.
+Require all denied

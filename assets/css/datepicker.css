@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Eigener Datumswähler als Popover unter dem Titel.
+   ========================================================================== */
+
+.picker {
+    position: fixed;
+    z-index: 60;
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-lg);
+    transform-origin: top center;
+    animation: picker-in var(--dur-med) var(--ease-out);
+}
+
+.picker.is-closing {
+    animation: picker-out var(--dur-fast) var(--ease-out) forwards;
+}
+
+@keyframes picker-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+    }
+}
+
+@keyframes picker-out {
+    to {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+    }
+}
+
+.picker-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 59;
+}
+
+@media (max-width: 560px) {
+    .picker-backdrop {
+        background: rgba(0, 0, 0, 0.35);
+        animation: fade var(--dur-med) var(--ease-out);
+    }
+
+    .picker {
+        left: 12px !important;
+        right: 12px;
+        width: auto;
+        max-width: none;
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+}
+
+.picker-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.picker-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.picker-heading-btn {
+    min-height: 36px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 540;
+    font-variation-settings: "opsz" 30;
+    transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.picker-heading-btn:hover:not(:disabled) {
+    background: var(--neutral-soft);
+}
+
+.picker-heading-btn:disabled {
+    cursor: default;
+    color: var(--text);
+}
+
+.picker-head .icon-btn {
+    width: 36px;
+    height: 36px;
+}
+
+.picker-weekdays,
+.picker-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 2px;
+}
+
+.picker-weekdays {
+    margin-bottom: var(--space-1);
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
+
+.picker-weekdays span {
+    padding: var(--space-1) 0;
+}
+
+.picker-months,
+.picker-years {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+}
+
+.picker-cell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.picker-months .picker-cell,
+.picker-years .picker-cell {
+    aspect-ratio: auto;
+    min-height: 52px;
+    border-radius: var(--radius-md);
+}
+
+.picker-cell:hover:not(:disabled):not([aria-selected="true"]) {
+    background: var(--neutral-soft);
+}
+
+.picker-cell.is-outside {
+    color: var(--text-subtle);
+    opacity: 0.55;
+}
+
+.picker-cell:disabled {
+    color: var(--text-subtle);
+    opacity: 0.35;
+}
+
+.picker-cell.is-today {
+    box-shadow: inset 0 0 0 1.5px var(--border-strong);
+    font-weight: 700;
+}
+
+.picker-cell[aria-selected="true"] {
+    background: linear-gradient(140deg, var(--accent-strong), var(--ember));
+    color: var(--text-on-accent);
+    font-weight: 700;
+    box-shadow: 0 6px 14px -6px color-mix(in srgb, var(--ember) 80%, transparent);
+}
+
+/* Markierung für Tage/Monate mit Saunadaten */
+.picker-cell.has-sauna::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: var(--mark, var(--accent));
+    box-shadow: 0 0 6px color-mix(in srgb, var(--mark, var(--accent)) 70%, transparent);
+}
+
+/* Bei Monaten zeigt die Zahl der Saunatage die Markierung. */
+.picker-months .picker-cell.has-sauna::after {
+    display: none;
+}
+
+.picker-months .picker-cell.has-sauna .picker-cell-sub {
+    color: var(--accent-text);
+}
+
+.picker-years .picker-cell.has-sauna::after {
+    bottom: 7px;
+}
+
+.picker-cell[aria-selected="true"].has-sauna::after {
+    background: var(--text-on-accent);
+    box-shadow: none;
+}
+
+.picker-cell-sub {
+    display: block;
+    margin-top: 1px;
+    color: var(--text-subtle);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.picker-cell[aria-selected="true"] .picker-cell-sub {
+    color: inherit;
+    opacity: 0.8;
+}
+
+.picker-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+}
+
+.picker-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.picker-legend::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.picker-body {
+    min-height: 268px;
+}
+
+.picker-body.is-loading .picker-cell.has-sauna::after {
+    opacity: 0;
+}

@@ -1,0 +1,348 @@
+/* ==========================================================================
+   Live-Karte mit aktueller Temperatur.
+   Die Farbe (--live-color) und der Glutschein (--live-glow) setzt das
+   JavaScript abhängig von der Temperatur.
+   ========================================================================== */
+
+.live {
+    --live-color: var(--temp-cool);
+    --live-glow: transparent;
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 236px;
+    padding: var(--space-6) var(--space-5);
+    border-radius: var(--radius-xl);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+}
+
+@media (min-width: 720px) {
+    .live {
+        padding: var(--space-8) var(--space-10);
+    }
+}
+
+/* Glutschein hinter der Zahl */
+.live::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 75% 85% at 16% 38%, var(--live-glow), transparent 72%),
+        radial-gradient(ellipse 60% 60% at 92% 112%, color-mix(in srgb, var(--live-glow) 50%, transparent), transparent 70%);
+    transition: background var(--dur-slow) var(--ease-out);
+    pointer-events: none;
+}
+
+/* Feine Holzmaserung als Textur, sehr dezent */
+.live::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+        172deg,
+        transparent 0 22px,
+        rgba(255, 220, 180, 0.018) 22px 23px,
+        transparent 23px 41px,
+        rgba(255, 220, 180, 0.012) 41px 42px
+    );
+    pointer-events: none;
+}
+
+:root[data-theme="light"] .live::after {
+    background-image: repeating-linear-gradient(
+        172deg,
+        transparent 0 22px,
+        rgba(120, 70, 30, 0.025) 22px 23px,
+        transparent 23px 41px,
+        rgba(120, 70, 30, 0.018) 41px 42px
+    );
+}
+
+.live-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.skeleton--pill {
+    width: 190px;
+    height: 30px;
+    border-radius: var(--radius-pill);
+}
+
+.skeleton--hero {
+    width: min(320px, 80%);
+    height: 110px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton--line {
+    width: min(260px, 60%);
+    height: 18px;
+}
+
+.live-grid {
+    display: grid;
+    gap: var(--space-6);
+}
+
+.live-grid.is-entering {
+    animation: fade-up var(--dur-slow) var(--ease-out);
+}
+
+@media (min-width: 880px) {
+    .live-grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        align-items: center;
+        gap: var(--space-10);
+    }
+}
+
+.live-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.live-temp {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin: var(--space-2) 0 0;
+    line-height: 0.95;
+}
+
+.live-value {
+    font-size: var(--fs-hero);
+    font-weight: 260;
+    letter-spacing: -0.055em;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(175deg, var(--text) 30%, color-mix(in srgb, var(--live-color) 85%, var(--text)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background var(--dur-slow) var(--ease-out);
+}
+
+.live[data-state="offline"] .live-value {
+    background: none;
+    color: var(--text-subtle);
+}
+
+.live-unit {
+    margin-top: 0.55em;
+    font-size: calc(var(--fs-hero) * 0.3);
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: -0.01em;
+}
+
+.trend {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-top: 0.75em;
+    border-radius: 50%;
+    background: var(--neutral-soft);
+    color: var(--text-muted);
+    transition: background-color var(--dur-med) var(--ease-out), color var(--dur-med) var(--ease-out);
+}
+
+.trend svg {
+    width: 22px;
+    height: 22px;
+    transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.trend--rising {
+    background: var(--accent-soft);
+    color: var(--accent-text);
+}
+
+.trend--rising svg {
+    transform: rotate(-45deg);
+}
+
+.trend--falling {
+    background: color-mix(in srgb, var(--temp-cold) 16%, transparent);
+    color: var(--temp-cold);
+}
+
+.trend--falling svg {
+    transform: rotate(45deg);
+}
+
+.live-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+}
+
+.live-meta .sep {
+    color: var(--text-subtle);
+}
+
+.live-meta strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.live-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+}
+
+/* Kleine Kurve der letzten 3 Stunden */
+.spark {
+    position: relative;
+    padding: var(--space-3) var(--space-4) var(--space-2);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+    border: 1px solid var(--border);
+}
+
+.spark-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.spark-range {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+.spark svg {
+    width: 100%;
+    height: 72px;
+    overflow: visible;
+}
+
+.spark-line {
+    fill: none;
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.spark-threshold {
+    stroke: var(--text-subtle);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+    opacity: 0.6;
+}
+
+.spark-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-1);
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+}
+
+.spark-empty {
+    display: grid;
+    place-items: center;
+    height: 72px;
+    color: var(--text-subtle);
+    font-size: var(--fs-sm);
+}
+
+.live-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+@media (max-width: 420px) {
+    .live-facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.live-fact {
+    min-width: 0;
+}
+
+.live-fact dt {
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.live-fact dd {
+    margin-top: 2px;
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.live-fact dd small {
+    margin-left: 2px;
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+}
+
+.live-empty {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: 52ch;
+}
+
+.live-empty h2 {
+    font-family: var(--font-display);
+    font-size: var(--fs-2xl);
+    font-weight: 520;
+}
+
+.live-empty p {
+    color: var(--text-muted);
+}
+
+.live-empty code {
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    font-size: 0.9em;
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}

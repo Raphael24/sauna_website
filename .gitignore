@@ -1,0 +1,12 @@
+# Zugangsdaten nie ins Repository
+config.php
+
+# Sitzungsdateien der Anmeldung
+storage/sessions/*
+!storage/sessions/.gitkeep
+
+# Editor und Betriebssystem
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

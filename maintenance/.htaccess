@@ -1,0 +1,2 @@
+# Wartungsskripte laufen nur als Cronjob, nicht über das Web.
+Require all denied

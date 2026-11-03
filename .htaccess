@@ -1,0 +1,60 @@
+# ---------------------------------------------------------------------------
+# Sauna-Monitor – Apache-Einstellungen (Hostinger / LiteSpeed kompatibel)
+# ---------------------------------------------------------------------------
+
+Options -Indexes
+DirectoryIndex index.php
+AddDefaultCharset utf-8
+
+# Immer über HTTPS (Hostinger stellt das SSL-Zertifikat kostenlos aus).
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Den API-Key-Header auch bei PHP als CGI/FPM durchreichen.
+    RewriteCond %{HTTP:X-API-Key} .
+    RewriteRule .* - [E=HTTP_X_API_KEY:%{HTTP:X-API-Key}]
+
+    # Interne Ordner und versteckte Dateien sperren.
+    RewriteRule ^(lib|storage|maintenance)(/|$) - [F,L]
+    # .well-known bleibt erreichbar (wird für das SSL-Zertifikat gebraucht).
+    RewriteCond %{REQUEST_URI} !/\.well-known/
+    RewriteRule (^|/)\. - [F,L]
+</IfModule>
+
+# Konfiguration, Schema, Anleitungen und Git-Dateien nie ausliefern.
+<FilesMatch "^(config\.php|config\.sample\.php|setup\.sql|.*\.md|LICENSE|\.git.*|\.htaccess)$">
+    Require all denied
+</FilesMatch>
+
+# Sicherheits-Header
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# Caching: CSS/JS immer kurz nachfragen (ES-Module tragen keine Versionsnummer),
+# Bilder und Schriften länger behalten.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+    <FilesMatch "\.(svg|png|ico|woff2)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+    AddType text/javascript .js .mjs
+    AddType image/svg+xml .svg
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>

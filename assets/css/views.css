@@ -1,0 +1,527 @@
+/* ==========================================================================
+   Ansichten: Tag, Monat, Jahr – plus Übergänge und Lade-Skelette.
+   ========================================================================== */
+
+.view-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+@media (min-width: 720px) {
+    .view-content {
+        gap: var(--space-6);
+    }
+}
+
+/* Sanfter Übergang beim Wechsel */
+.view-content.is-entering {
+    animation: view-in var(--dur-slow) var(--ease-out);
+}
+
+.view-content.is-entering.from-left {
+    animation-name: view-in-left;
+}
+
+.view-content.is-entering.from-right {
+    animation-name: view-in-right;
+}
+
+@keyframes view-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@keyframes view-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-18px);
+    }
+}
+
+@keyframes view-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+}
+
+.view.is-refreshing .view-content {
+    opacity: 0.55;
+    transition: opacity var(--dur-med) var(--ease-out);
+}
+
+/* Skelette */
+.skeleton-chart {
+    height: 420px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-stat {
+    height: 108px;
+    border-radius: var(--radius-lg);
+}
+
+.skeleton-row {
+    height: 76px;
+    border-radius: var(--radius-md);
+}
+
+.skeleton-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--space-2);
+}
+
+.skeleton-calendar .skeleton {
+    aspect-ratio: 1 / 0.86;
+}
+
+.skeleton-heatmap {
+    height: 220px;
+    border-radius: var(--radius-lg);
+}
+
+@media (max-width: 720px) {
+    .skeleton-chart {
+        height: 320px;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Tagesansicht
+   --------------------------------------------------------------------------- */
+.chart--day {
+    height: 440px;
+    touch-action: pan-y;
+}
+
+@media (max-width: 720px) {
+    .chart--day {
+        height: 340px;
+    }
+
+    .chart-card {
+        padding-left: var(--space-3);
+        padding-right: var(--space-3);
+    }
+
+    .chart-card .card-head,
+    .chart-card .legend {
+        padding: 0 var(--space-2);
+    }
+}
+
+.chart-card .legend {
+    margin-top: var(--space-3);
+}
+
+.zoom-hint {
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+}
+
+@media (hover: hover) {
+    .zoom-hint--touch {
+        display: none;
+    }
+}
+
+@media (hover: none) {
+    .zoom-hint--mouse {
+        display: none;
+    }
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.session {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    border: 1px solid transparent;
+    text-align: left;
+    transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.session:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-3);
+}
+
+.session:active {
+    transform: scale(0.995);
+}
+
+.session.is-selected {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+}
+
+.session-index {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--session-color, var(--accent)) 18%, transparent);
+    color: var(--session-color, var(--accent));
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.session-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.session-time {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1) var(--space-3);
+}
+
+.session-time strong {
+    font-size: var(--fs-lg);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.session-duration {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.session-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--danger);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.session-live::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ember);
+    animation: pulse 1.8s var(--ease-out) infinite;
+}
+
+.session-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.metric {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--neutral-soft);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.metric strong {
+    color: var(--text);
+    font-size: var(--fs-sm);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+}
+
+.session-go {
+    color: var(--text-subtle);
+    transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.session:hover .session-go {
+    color: var(--accent-text);
+    transform: scale(1.1);
+}
+
+@media (max-width: 520px) {
+    .session {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: var(--space-3);
+        padding: var(--space-3);
+    }
+
+    .session-go {
+        display: none;
+    }
+}
+
+.chart-card {
+    scroll-margin-top: 96px;
+}
+
+/* ---------------------------------------------------------------------------
+   Monatsansicht
+   --------------------------------------------------------------------------- */
+.calendar-weekdays,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--space-2);
+}
+
+.calendar-weekdays {
+    margin-bottom: var(--space-2);
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.day-tile {
+    --tile: transparent;
+    --tile-strength: 0%;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    aspect-ratio: 1 / 0.86;
+    min-width: 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    background:
+        linear-gradient(160deg, color-mix(in srgb, var(--tile) var(--tile-strength), transparent), color-mix(in srgb, var(--tile) calc(var(--tile-strength) * 0.55), transparent)),
+        var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+a.day-tile:hover {
+    color: var(--text);
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+}
+
+.day-tile.is-sauna {
+    border-color: color-mix(in srgb, var(--tile) 35%, transparent);
+}
+
+.day-tile.is-sauna.is-hot {
+    color: #fff8f2;
+}
+
+.day-tile.is-sauna.is-hot .day-tile-meta,
+.day-tile.is-sauna.is-hot .day-tile-num {
+    color: rgba(255, 248, 242, 0.85);
+}
+
+.day-tile.is-empty {
+    background: transparent;
+    border-style: dashed;
+    color: var(--text-subtle);
+}
+
+.day-tile.is-future {
+    opacity: 0.4;
+    background: transparent;
+    border-style: dashed;
+}
+
+.day-tile.is-outside {
+    visibility: hidden;
+}
+
+.day-tile.is-today {
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.day-tile-num {
+    font-size: var(--fs-sm);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+}
+
+.day-tile-max {
+    font-size: var(--fs-lg);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.day-tile-max small {
+    font-size: 0.65em;
+    font-weight: 500;
+}
+
+.day-tile-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.day-tile-meta svg {
+    width: 12px;
+    height: 12px;
+}
+
+.day-tile-ambient {
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+    .calendar-weekdays,
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .day-tile {
+        aspect-ratio: 1 / 1.05;
+        padding: 6px;
+        border-radius: 10px;
+        justify-content: flex-start;
+        gap: 2px;
+    }
+
+    .day-tile-num {
+        font-size: var(--fs-xs);
+    }
+
+    .day-tile-max {
+        font-size: var(--fs-sm);
+    }
+
+    .day-tile-meta,
+    .day-tile-ambient {
+        display: none;
+    }
+
+    .day-tile.is-sauna .day-tile-meta {
+        display: flex;
+        font-size: 10px;
+    }
+
+    .day-tile-meta svg {
+        display: none;
+    }
+}
+
+@media (max-width: 380px) {
+    .day-tile.is-sauna .day-tile-meta {
+        display: none;
+    }
+}
+
+.calendar-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.chart--bars {
+    height: 240px;
+}
+
+/* ---------------------------------------------------------------------------
+   Jahresansicht
+   --------------------------------------------------------------------------- */
+.chart--heatmap {
+    height: 230px;
+}
+
+.chart--months {
+    height: 260px;
+}
+
+.heatmap-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+}
+
+.two-col {
+    display: grid;
+    gap: var(--space-5);
+}
+
+@media (min-width: 960px) {
+    .two-col {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: var(--space-6);
+    }
+}
+
+.month-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--space-2);
+}
+
+.month-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    border: 1px solid transparent;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.month-chip:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+}
+
+.month-chip strong {
+    font-size: var(--fs-sm);
+}
+
+.month-chip span {
+    color: var(--text-muted);
+    font-size: var(--fs-xs);
+    font-variant-numeric: tabular-nums;
+}
