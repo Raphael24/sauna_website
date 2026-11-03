@@ -272,6 +272,21 @@ final class TestDataGenerator
     }
 }
 
+/**
+ * Legt die Tabellen aus setup.sql an, falls sie noch fehlen. So funktioniert
+ * das Skript auch, wenn setup.sql noch nicht in phpMyAdmin ausgeführt wurde.
+ */
+function ensureSchema(): void
+{
+    $sql = (string) file_get_contents(__DIR__ . '/setup.sql');
+    $sql = preg_replace('/^\s*--.*$/m', '', $sql);
+    foreach (explode(';', (string) $sql) as $statement) {
+        if (trim($statement) !== '') {
+            Database::pdo()->exec($statement);
+        }
+    }
+}
+
 /** Löscht alle Mess- und Cachewerte. */
 function deleteAllData(): void
 {
@@ -287,6 +302,7 @@ function deleteAllData(): void
 // ---------------------------------------------------------------------------
 if (PHP_SAPI === 'cli') {
     $opts = getopt('', ['days::', 'keep', 'delete-all']);
+    ensureSchema();
     if (isset($opts['delete-all'])) {
         deleteAllData();
         echo "Alle Messwerte wurden gelöscht.\n";
@@ -319,6 +335,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $error = 'Der API-Key ist falsch.';
     } else {
         try {
+            ensureSchema();
             if (($_POST['action'] ?? '') === 'delete') {
                 deleteAllData();
                 $message = 'Alle Messwerte wurden gelöscht.';
