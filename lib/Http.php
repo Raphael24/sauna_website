@@ -72,7 +72,10 @@ final class Http
         $message = $publicMessage ?? 'Auf dem Server ist ein Fehler aufgetreten. Bitte später erneut versuchen.';
         $debug = class_exists('Config', false) && Config::debug();
         if ($e instanceof PDOException) {
-            $message = $publicMessage ?? 'Die Datenbank ist nicht erreichbar. Bitte die Zugangsdaten in config.php prüfen.';
+            // 42S02 = Tabelle fehlt: setup.sql wurde noch nicht ausgeführt.
+            $message = $publicMessage ?? ((string) $e->getCode() === '42S02'
+                ? 'Die Tabellen fehlen. Bitte setup.sql in phpMyAdmin ausführen.'
+                : 'Die Datenbank ist nicht erreichbar. Bitte die Zugangsdaten in config.php prüfen.');
         }
         if ($debug || $publicMessage !== null && str_contains($e->getMessage(), 'config.php')) {
             $message .= ' (' . $e->getMessage() . ')';
