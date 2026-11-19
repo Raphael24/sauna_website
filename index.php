@@ -50,6 +50,8 @@ header('Cache-Control: no-cache');
     <meta name="theme-color" content="#f7f1ea" media="(prefers-color-scheme: light)">
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="<?= asset('assets/img/favicon.svg') ?>" id="favicon">
+    <link rel="apple-touch-icon" href="<?= asset('assets/img/apple-touch-icon.png') ?>">
+    <link rel="manifest" href="<?= asset('manifest.json') ?>">
 
     <script src="<?= asset('assets/js/theme-init.js') ?>"></script>
 
