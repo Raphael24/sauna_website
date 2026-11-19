@@ -43,6 +43,8 @@ header('Cache-Control: no-store');
     <meta name="color-scheme" content="dark light">
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="<?= $v('assets/img/favicon.svg') ?>">
+    <link rel="apple-touch-icon" href="<?= $v('assets/img/apple-touch-icon.png') ?>">
+    <link rel="manifest" href="<?= $v('manifest.json') ?>">
     <script src="<?= $v('assets/js/theme-init.js') ?>"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
