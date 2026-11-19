@@ -93,12 +93,34 @@ const live = new LiveCard(document.getElementById('live'), {
                 currentView?.refresh();
             }
         }
-        // Mitternacht überschritten: Grenzen und Navigation anpassen.
-        if (data.today?.date && data.today.date !== nav.lastToday) {
-            nav.lastToday = data.today.date;
-            nav.update(router.state);
-        }
+        checkDayChange();
     },
+});
+
+/* ---------------------------------------------------------------------------
+   Mitternacht: Wer den laufenden Zeitraum ansieht, springt mit auf den neuen Tag
+   --------------------------------------------------------------------------- */
+
+let lastToday = D.today();
+
+function checkDayChange() {
+    const today = D.today();
+    if (today === lastToday) {
+        return;
+    }
+    const followed = periodKey(router.state) === periodKey({ ...router.state, date: lastToday });
+    lastToday = today;
+    if (followed) {
+        navigate({ date: today }, { source: 'today', direction: 1, replace: true });
+    }
+    nav.update(router.state);
+}
+
+setInterval(checkDayChange, 60 * 1000);
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        checkDayChange();
+    }
 });
 
 /* ---------------------------------------------------------------------------
@@ -173,7 +195,6 @@ async function loadRange() {
     }
 }
 
-nav.lastToday = D.today();
 live.start();
 showView(router.state, { source: 'init' });
 loadRange();

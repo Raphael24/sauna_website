@@ -35,10 +35,16 @@ export function dateParam(state) {
     return state.date;
 }
 
+/**
+ * Der laufende Zeitraum bekommt kein Datum in der URL. So zeigt ein Neuladen,
+ * ein Lesezeichen oder ein wiederhergestellter Tab immer den aktuellen Tag.
+ */
 export function urlFor(state) {
     const params = new URLSearchParams();
     params.set('view', state.view);
-    params.set('date', dateParam(state));
+    if (dateParam(state) !== dateParam({ ...state, date: D.today() })) {
+        params.set('date', dateParam(state));
+    }
     return `?${params.toString()}`;
 }
 
@@ -60,7 +66,9 @@ export class Router {
 
         window.addEventListener('popstate', (event) => {
             const prev = this.state;
-            this.state = event.state && VIEWS.includes(event.state.view) ? event.state : parseUrl();
+            // Ohne Datum in der URL gilt «heute», auch wenn seither Mitternacht war.
+            const hasDate = new URLSearchParams(window.location.search).has('date');
+            this.state = hasDate && event.state && VIEWS.includes(event.state.view) ? event.state : parseUrl();
             this.emit(prev, { source: 'history' });
         });
     }
